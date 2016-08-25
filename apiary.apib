@@ -4,15 +4,15 @@ FORMAT: 1A
 
 API allowing merchants to create and maintain a shopping basket holding items their customers might want to purchase.
 
-## Basket [/basket]
+## Basket [/basket/{basketId}]
 
-### Get basket [GET]
+### View basket [GET]
 
 + Request
 
     + Headers
     
-            Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+            Authorization: Basic ABCDEF
 
 + Response 200 (application/json)
 
@@ -22,18 +22,21 @@ API allowing merchants to create and maintain a shopping basket holding items th
                 "customerId": "someCustomerIdentifier"
             }
 
+
+## All baskets [/baskets]
+
 ### Create basket [POST]
 
 + Request (application/json)
 
     + Headers
     
-            Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+            Authorization: Basic ABCDEF
 
     + Body
 
             {
-                "customerId": "someCustomerIdentifier"
+                "customerId": "someCustomerIdentifier",
                 "tags": [
                     "someCustomInformation",
                     "anotherPieceOfInformation"
