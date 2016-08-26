@@ -6,32 +6,9 @@ API allowing merchants to create and maintain a shopping basket holding items th
 
 ## All baskets [/baskets]
 
-### Search by customer [GET /baskets?{customer}]
-
-+ Request
-
-    + Headers
-    
-            Authorization: Basic ABCDEF
-            
-    + Parameters
-    
-        + customer (optional, string) ... Customer ID to search by
-            
-+ Response 200 (application/json)
-    
-    + Body
-    
-            [
-                { 
-                    "basketId": "3849ec7c-6aea-11e6-805a-40a8f045eae5",
-                    "createdAt": "2016-08-25T18:31:00Z",
-                    "lastUpdated": "2016-08-25T18:31:00Z"
-                }
-            ]
-    
-
 ### Create basket [POST]
+
+Create a basket to hold items for a given customer. You can assign arbitrary tags to baskets to help with organisation and searching.
 
 + Request (application/json)
 
@@ -42,11 +19,8 @@ API allowing merchants to create and maintain a shopping basket holding items th
     + Body
 
             {
-                "customerId": "someCustomerIdentifier",
-                "tags": [
-                    "someCustomInformation",
-                    "anotherPieceOfInformation"
-                ]
+                "customer": "CUST_1234",
+                "tags": []
             }
     
 + Response 201 (application/json)
@@ -58,21 +32,127 @@ API allowing merchants to create and maintain a shopping basket holding items th
     + Body
 
             {
-                "basketId": "3849ec7c-6aea-11e6-805a-40a8f045eae5",
+                "id": "3849ec7c-6aea-11e6-805a-40a8f045eae5",
                 "createdAt": "2016-08-25T18:31:00Z",
                 "lastUpdated": "2016-08-25T18:31:00Z",
+                "customer": "CUST_1234",
+                "tags": [],
                 "links": [
                     {
                         "rel": "self",
-                        "href": "...",
+                        "href": "/basket/3849ec7c-6aea-11e6-805a-40a8f045eae5",
                     }
                 ]
             }
 
+### List all baskets [GET]
+
+Fetch a list of all baskets.
+
++ Request
+
+    + Headers
+    
+            Authorization: Basic ABCDEF
+            
++ Response 200 (application/json)
+
+    + Body
+    
+            [
+                { 
+                    "id": "3849ec7c-6aea-11e6-805a-40a8f045eae5",
+                    "createdAt": "2016-08-25T18:31:00Z",
+                    "lastUpdated": "2016-08-25T18:31:00Z",
+                    "customer": "CUST_1234",
+                    "tags": [],
+                    "links": [
+                        {
+                            "rel": "self",
+                            "href": "/basket/3849ec7c-6aea-11e6-805a-40a8f045eae5"
+                        }
+                    ]
+                }
+            ]
+
+### Search by customer [GET /baskets?customer={customer}]
+
+Fetch a list of baskets for a given customer.
+
++ Request
+
+    + Headers
+    
+            Authorization: Basic ABCDEF
+            
+    + Parameters
+    
+        + customer (string)
+            
+            Customer identifier
+            
++ Response 200 (application/json)
+    
+    + Body
+    
+            [
+                { 
+                    "id": "3849ec7c-6aea-11e6-805a-40a8f045eae5",
+                    "createdAt": "2016-08-25T18:31:00Z",
+                    "lastUpdated": "2016-08-25T18:31:00Z",
+                    "customer": "CUST_1234",
+                    "tags": [],
+                    "links": [
+                        {
+                            "rel": "self",
+                            "href": "/basket/3849ec7c-6aea-11e6-805a-40a8f045eae5"
+                        }
+                    ]
+                }
+            ]
+
+### Search by tag [GET /baskets?tag={tag}]
+
+Fetch a list of baskets with a given tag. Tags are case sensitive for searching.
+
++ Request
+
+    + Headers
+    
+            Authorization: Basic ABCDEF
+        
+    + Parameters
+    
+        + tag (string)
+        
+            Search tag
+            
++ Response 200 (application/json)
+
+            [
+                { 
+                    "id": "3849ec7c-6aea-11e6-805a-40a8f045eae5",
+                    "createdAt": "2016-08-25T18:31:00Z",
+                    "lastUpdated": "2016-08-25T18:31:00Z",
+                    "customer": "CUST_1234",
+                    "tags": [
+                        "some_tag",
+                        "another_tag"
+                    ],
+                    "links": [
+                        {
+                            "rel": "self",
+                            "href": "/basket/3849ec7c-6aea-11e6-805a-40a8f045eae5"
+                        }
+                    ]
+                }
+            ]
 
 ## Single basket [/basket/{basketId}]
 
-### View basket [GET]
+### Fetch basket [GET]
+
+Fetch a basket, including its contained items and calculated totals.
 
 + Request
 
@@ -84,18 +164,205 @@ API allowing merchants to create and maintain a shopping basket holding items th
 
     + Body
     
-            {
-                "customerId": "someCustomerIdentifier"
+            { 
+                "id": "3849ec7c-6aea-11e6-805a-40a8f045eae5",
+                "createdAt": "2016-08-25T18:31:00Z",
+                "lastUpdated": "2016-08-25T18:31:00Z",
+                "customer": "CUST_1234",
+                "tags": [],
+                "items": [
+                    {
+                        "id": 1,
+                        "sku": "PROD_0026",
+                        "description": "Men's white t-shirt (XL)",
+                        "price": 7.99,
+                        "quantity": 2,
+                        "lineTotal": 15.98
+                    },
+                    {
+                        "id": 2,
+                        "sku": "PROD_0043",
+                        "description": "Unisex black socks (UK 9-13)",
+                        "price": 3.95,
+                        "quantity": 1,
+                        "lineTotal": 3.95
+                    }
+                ],
+                "discounts": [],
+                "itemTotal": 19.93,
+                "discountTotal": 0.00,
+                "total": 19.93
             }
+            
+### Update basket metadata [POST]
+
+Update metadata associated with a basket. At present, this only updates tags for the basket.
+
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Basic ABCDEF
+            
+    + Body
+        
+            {
+                "tags": [
+                    "some_tag",
+                    "another_tag"
+                ]
+            }
+            
++ Response 204
 
 ### Discard basket [DELETE]
 
-Remove a basket that is no longer required.
+Remove a basket when it is no longer required.
 
 + Request
 
     + Headers
         
+            Authorization: Basic ABCDEF
+            
++ Response 204
+
+## Basket contents [/basket/{basketId}/item/{itemId}]
+
+### Add item [POST /basket/{basketId}/items]
+
+Add an item to a basket.
+
+If an item with the same SKU already exists, it is merged with the existing item and the quantity updated
+accordingly. If the description and price do not match, the request is rejected.
+
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Basic ABCDEF
+            
+    + Body
+    
+            {
+                "sku": "PROD_0026",
+                "description": "Men's white t-shirt (XL)",
+                "price": 7.99,
+                "quantity": 2
+            }
+            
++ Response 201 (application/json)
+
+    + Body
+    
+            {
+                "id": "1,
+                "sku": "PROD_0026",
+                "description": "Men's white t-shirt (XL)",
+                "price": 7.99,
+                "quantity": 2,
+                "lineTotal": 15.98,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "/basket/3849ec7c-6aea-11e6-805a-40a8f045eae5/item/1"
+                    },
+                    {
+                        "rel": "basket",
+                        "href": "/basket/3849ec7c-6aea-11e6-805a-40a8f045eae5"
+                    }
+                ]
+            }
+            
++ Response 409 (application/json)
+
+    + Body
+    
+            {
+                "code": "INCOMPATIBLE_DUPLICATE_SKU",
+                "message": "Item with SKU 'PROD_0026' already present with a different description or price"
+            }
+
+### Fetch item [GET]
+
+Fetch an item, including its calculated totals.
+
++ Request
+
+    + Headers
+    
+            Authorization: Basic ABCDEF
+            
++ Response 200 (application/json)
+
+    + Body
+    
+            {
+                "id": "1,
+                "sku": "PROD_0026",
+                "description": "Men's white t-shirt (XL)",
+                "price": 7.99,
+                "quantity": 2,
+                "lineTotal": 15.98,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "/basket/3849ec7c-6aea-11e6-805a-40a8f045eae5/item/1"
+                    },
+                    {
+                        "rel": "basket",
+                        "href": "/basket/3849ec7c-6aea-11e6-805a-40a8f045eae5"
+                    }
+                ]
+            }
+
+### Update item [POST]
+
+Update the quantity of an item within a basket.
+
+The quantity cannot be reduced to zero; instead, use "remove item" to remove an item from a basket.
+
++ Request (application/json)
+    
+    + Headers
+        
+            Authorization: Basic ABCDEF
+                
+    + Body
+        
+            {
+                "quantity": 3
+            }
+                
++ Response 200 (application/json)
+
+    + Body
+            
+            {
+                "id": "1,
+                "sku": "PROD_0026",
+                "description": "Men's white t-shirt (XL)",
+                "price": 7.99,
+                "quantity": 3,
+                "lineTotal": 23.97,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "/basket/3849ec7c-6aea-11e6-805a-40a8f045eae5/item/1"
+                    },
+                    {
+                        "rel": "basket",
+                        "href": "/basket/3849ec7c-6aea-11e6-805a-40a8f045eae5"
+                    }
+                ]
+            }
+            
+### Remove item [DELETE]
+
++ Request
+
+    + Headers
+    
             Authorization: Basic ABCDEF
             
 + Response 204
