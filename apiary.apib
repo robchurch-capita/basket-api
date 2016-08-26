@@ -4,6 +4,9 @@ FORMAT: 1A
 
 API allowing merchants to create and maintain a shopping basket holding items their customers might want to purchase.
 
+In order to access this API, you need an API username and password, which are associated with your account. Credentials
+are provided with each request, using HTTP basic authentication.
+
 ## All baskets [/baskets]
 
 ### Create basket [POST]
@@ -359,6 +362,8 @@ The quantity cannot be reduced to zero; instead, use "remove item" to remove an 
             
 ### Remove item [DELETE]
 
+Remove an item from a basket.
+
 + Request
 
     + Headers
@@ -366,3 +371,5 @@ The quantity cannot be reduced to zero; instead, use "remove item" to remove an 
             Authorization: Basic ABCDEF
             
 + Response 204
+
+## Discounts
