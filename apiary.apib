@@ -49,7 +49,7 @@ API allowing merchants to create and maintain a shopping basket holding items th
                 ]
             }
     
-+ Response 200 (application/json)
++ Response 201 (application/json)
 
     + Headers
     
@@ -61,6 +61,12 @@ API allowing merchants to create and maintain a shopping basket holding items th
                 "basketId": "3849ec7c-6aea-11e6-805a-40a8f045eae5",
                 "createdAt": "2016-08-25T18:31:00Z",
                 "lastUpdated": "2016-08-25T18:31:00Z",
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "...",
+                    }
+                ]
             }
 
 
