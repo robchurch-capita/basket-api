@@ -6,6 +6,31 @@ API allowing merchants to create and maintain a shopping basket holding items th
 
 ## All baskets [/baskets]
 
+### Search by customer [GET /baskets?{customer}]
+
++ Request
+
+    + Headers
+    
+            Authorization: Basic ABCDEF
+            
+    + Parameters
+    
+        + customer (optional, string) ... Customer ID to search by
+            
++ Response 200 (application/json)
+    
+    + Body
+    
+            [
+                { 
+                    "basketId": "3849ec7c-6aea-11e6-805a-40a8f045eae5",
+                    "createdAt": "2016-08-25T18:31:00Z",
+                    "lastUpdated": "2016-08-25T18:31:00Z"
+                }
+            ]
+    
+
 ### Create basket [POST]
 
 + Request (application/json)
@@ -34,7 +59,8 @@ API allowing merchants to create and maintain a shopping basket holding items th
 
             {
                 "basketId": "3849ec7c-6aea-11e6-805a-40a8f045eae5",
-                "createdAt": "2016-08-25T18:31:00Z"
+                "createdAt": "2016-08-25T18:31:00Z",
+                "lastUpdated": "2016-08-25T18:31:00Z",
             }
 
 
